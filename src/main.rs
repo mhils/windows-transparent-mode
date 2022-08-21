@@ -5,7 +5,7 @@ use std::time::Duration;
 use windivert::{WinDivert, WinDivertEvent, WinDivertFlags, WinDivertLayer, WinDivertPacket, WinDivertParsedPacket};
 
 use anyhow::{anyhow, Context, Error, Result};
-use log::{debug, trace, warn};
+use log::{debug};
 use lru_time_cache::{LruCache};
 use windivert::address::WinDivertNetworkData;
 use netstat2::{get_sockets_info, AddressFamilyFlags, ProtocolFlags};
@@ -38,7 +38,10 @@ enum ConnectionAction {
 }
 
 fn main() -> Result<()> {
-    env_logger::init();
+    if cfg!(debug_assertions) {
+        // this increases binary size from ~300kb to 1MB for release builds.
+        env_logger::init();
+    }
 
     let args: Vec<String> = env::args().collect();
     let mitmproxy_port = args
@@ -58,7 +61,8 @@ fn main() -> Result<()> {
     let (tx, rx) = sync_channel::<Message>(32);
 
     // We currently rely on handles being automatically closed when the program exits.
-    let _icmp_handle = WinDivert::new("icmp", WinDivertLayer::Network, 1042, WinDivertFlags::new().set_drop()).context("Error opening WinDivert handle")?;
+    // only needed for forward mode
+    // let _icmp_handle = WinDivert::new("icmp", WinDivertLayer::Network, 1042, WinDivertFlags::new().set_drop()).context("Error opening WinDivert handle")?;
 
     //let filter = format!("tcp || ( udp && ( udp.DstPort == 53 || udp.DstPort == 443 || udp.SrcPort == {} ) )", mitmproxy_port);
     //debug!("Using filter: {}", filter);

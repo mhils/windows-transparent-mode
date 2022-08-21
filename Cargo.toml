@@ -1,5 +1,5 @@
 [package]
-name = "mitmproxy-windows-transparent-mode"
+name = "mitmproxy-redirector"
 version = "0.1.0"
 edition = "2021"
 

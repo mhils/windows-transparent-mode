@@ -266,6 +266,7 @@ impl InternetPacket {
     }
 
 
+    #[allow(dead_code)]
     pub fn hop_limit(&self) -> u8 {
         match self.ip_version {
             IpVersion::V4 => self.data[8],
@@ -273,6 +274,7 @@ impl InternetPacket {
         }
     }
 
+    #[allow(dead_code)]
     pub fn set_hop_limit(&mut self, hop_limit: u8) {
         match self.ip_version {
             IpVersion::V4 => self.data[8] = hop_limit,
